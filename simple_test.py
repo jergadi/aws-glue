@@ -27,14 +27,9 @@ dymc_frame = glue_context.create_dynamic_frame.from_catalog(database = db, table
 
 df = dymc_frame.toDF()
 
-df_sel = df.select(("codetabname").alias('tab_name')
-,	"id"
-,	df.intlid.value.alias('intl_id')
-,	df.userid.value.alias('user_id')
-,	df.name.value.alias('name')
-,	df.descn.value.alias('descn')
-,	df.active.value.alias('active')
-,	"fields").withColumn("LOAD_DTS", current_timestamp())
+df_sel = df.select(("column_to_choose").alias('column_name')
+,	"test_outside_column"
+,	df.test_column.alias('intl_id').withColumn("this_is_timestamp", current_timestamp())
         
 dynamic_frame_write = DynamicFrame.fromDF(df_sel, glue_context, "dynamic_frame_write")
 
