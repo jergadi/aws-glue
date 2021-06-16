@@ -27,13 +27,11 @@ dymc_frame = glue_context.create_dynamic_frame.from_catalog(database = db, table
 
 df = dymc_frame.toDF()
 
-rel_list = df.select("id", "bu_id", explode(df.column_with_array).alias('column_name_exploded'))
+rel_list = df.select("id", explode(df.column_with_array).alias('column_name_exploded'))
 
-df_sel = rel_list.select(hex(sha1(concat(encode(rel_list.id.cast("string"),"UTF-8"), encode(rel_list.bp_person_rel_list.trg_obj_id.value.cast("string"),"UTF-8")))).alias('LNK_BP_PERSON_HK') 
-, hex(sha1(encode(rel_list.id.cast("string"), "UTF-8"))).alias('HUB_BP_HK')
-, hex(sha1(encode(rel_list.bp_person_rel_list.trg_obj_id.value.cast("string"), "UTF-8"))).alias('HUB_PERSON_HK')
-, lit('ACP').alias('LNK_REC_SRC')
-, rel_list.bu_id.value.alias('bu_id')).withColumn("LOAD_DTS", date_format(current_timestamp(),"MM/dd/yyyy hh:mm:ss"))
+df_sel = rel_list.select(encode(column_name_exploded.test_column1.cast("string"),"UTF-8").alias('relational_1') 
+, encode(column_name_exploded.test_column2.cast("string"), "UTF-8").alias('relational_2')
+, lit('this_is_my_source').alias('source_id')).withColumn("timestamp", date_format(current_timestamp(),"MM/dd/yyyy hh:mm:ss"))
 
 dynamic_frame_write = DynamicFrame.fromDF(df_sel, glue_context, "dynamic_frame_write")
 
