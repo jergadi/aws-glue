@@ -36,11 +36,8 @@ rel_list = rel_list.toDF()
 
 df = dymc_frame.toDF()
 
-df_sel = df.select(hex(sha1(concat(encode(df.id.cast("string"),"UTF-8"), encode(rel_list.test_val.value.cast("string"),"UTF-8")))).alias('TEST_PERSON_HK') 
-, hex(sha1(encode(df.id.cast("string"), "UTF-8"))).alias('HUB_HK')
-, hex(sha1(encode(coalesce(rel_list.test_id.value, lit(0)).cast("string"), "UTF-8"))).alias('HUB_TEST_HK')
-, lit('ACP').alias('LNK_SRC')
-, df.test.alias('id')).withColumn("DTS", current_timestamp())
+df_sel = df.select(encode(rel_list.test_val.value.cast("string"),"UTF-8").alias('TESTKEY') 
+, lit('this_is_my_source').alias('SRC_FOR_ID')).withColumn("DTS", current_timestamp())
 
 dynamic_frame_write = DynamicFrame.fromDF(df_sel, glue_context, "dynamic_frame_write")
 
