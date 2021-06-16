@@ -29,18 +29,18 @@ dfc_root_table_name = "root"
 dymc_frame = glue_context.create_dynamic_frame.from_catalog(database = db, table_name = table)
 
 
-pre_dfc = dymc_frame.select_fields(['id', 'bu_id','bp_person_rel_list'])
+pre_dfc = dymc_frame.select_fields(['test)id','rel_list'])
 dfc = Relationalize.apply(frame = pre_dfc, staging_path = glue_temp_storage, name = dfc_root_table_name, transformation_ctx = "dfc")
 rel_list = dfc.select(dfc_root_table_name)
 rel_list = rel_list.toDF()
 
 df = dymc_frame.toDF()
 
-df_sel = df.select(hex(sha1(concat(encode(df.id.cast("string"),"UTF-8"), encode(rel_list.trg_obj_id.value.cast("string"),"UTF-8")))).alias('TEST_PERSON_HK') 
-, hex(sha1(encode(df.id.cast("string"), "UTF-8"))).alias('HUB_BP_HK')
-, hex(sha1(encode(coalesce(rel_list.trg_obj_id.value, lit(0)).cast("string"), "UTF-8"))).alias('HUB_PERSON_HK')
-, lit('ACP').alias('LNK_REC_SRC')
-, df.bu_id.value.alias('bu_id')).withColumn("LOAD_DTS", current_timestamp())
+df_sel = df.select(hex(sha1(concat(encode(df.id.cast("string"),"UTF-8"), encode(rel_list.test_val.value.cast("string"),"UTF-8")))).alias('TEST_PERSON_HK') 
+, hex(sha1(encode(df.id.cast("string"), "UTF-8"))).alias('HUB_HK')
+, hex(sha1(encode(coalesce(rel_list.test_id.value, lit(0)).cast("string"), "UTF-8"))).alias('HUB_TEST_HK')
+, lit('ACP').alias('LNK_SRC')
+, df.test.alias('id')).withColumn("DTS", current_timestamp())
 
 dynamic_frame_write = DynamicFrame.fromDF(df_sel, glue_context, "dynamic_frame_write")
 
