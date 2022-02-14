@@ -4,9 +4,9 @@ import boto3
 
 s3 = boto3.resource('s3')
 
-bucket = 'aws-glue-kgalife-test'
+bucket = 'your-bucket-here'
 
-obj = s3.Object(bucket, 'pelago/config.json')
+obj = s3.Object(bucket, 'your-config-bucket/config.json')
 config = json.load(obj.get()['Body'])
 
 client_id = config['client_id']
