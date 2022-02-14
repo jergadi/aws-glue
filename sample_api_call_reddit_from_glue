@@ -1,3 +1,6 @@
+# you need to have a connection to the outside internet for this to work. Make a Data Catalog connection that connects your subnet to a security group that can connect to the public internet.
+# params in the job details: --additional-python-modules s3://aws-glue-kgalife-test/pelago/wheelhouse/praw-7.4.0-py3-none-any.whl
+
 import json
 import praw
 import boto3
